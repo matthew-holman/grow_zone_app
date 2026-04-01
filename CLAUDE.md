@@ -6,35 +6,39 @@ A Next.js frontend for looking up Swedish grow zone calendars by postcode — sh
 
 - **Next.js 16** with React 19 and TypeScript (strict mode)
 - **Tailwind CSS v4** — uses `@import "tailwindcss"` syntax in `globals.css`
-- **Axios** via auto-generated OpenAPI client in `app/api/`
+- **Axios** via auto-generated OpenAPI client in `src/api/`
 
 ## Project Structure
 
 ```
-app/
+src/
   api/             Auto-generated OpenAPI client — do NOT edit manually
     core/          HTTP request plumbing (Axios-based)
     models/        TypeScript types for all API responses
     services/      Static service classes with typed API methods
-  components/      Shared UI components
-  globals.css      Global styles (Tailwind import)
-  layout.tsx       Root layout with API client provider
-  page.tsx         Main postcode lookup page
-  env.ts           API URL resolution from NEXT_PUBLIC_API_URL
-  openapi-client.ts  Configures OpenAPI.BASE at runtime
-  OpenApiClientProvider.tsx  Client component that initialises the API client
+  app/
+    components/    UI components (PostcodeEntry, CalendarGrid, etc.)
+    globals.css    Global styles (Tailwind import + brand colour tokens)
+    layout.tsx     Root layout with Playfair Display + DM Sans fonts
+    page.tsx       Server shell rendering <GrowZoneApp />
+  lib/
+    api.ts         fetchCalendar() wrapper — sets OpenAPI.BASE, maps errors
+    calendar.ts    buildTracks() helper for CalendarGrid
+    zones.ts       Zone ID → label/region lookup, getZoneHint()
+  types/
+    index.ts       AppState, TrackType, TrackRow
 ```
 
 ## API Client
 
-The `app/api/` directory is auto-generated from the backend OpenAPI spec:
+The `src/api/` directory is auto-generated from the backend OpenAPI spec:
 
 ```bash
 npm run generate:api   # Regenerates from http://localhost:8000/openapi.json
 ```
 
 **Key services:**
-- `CalendarService.getCalendarCalendarGet({ postcode })` — fetch the grow calendar for a 5-digit Swedish postcode
+- `CalendarService.getCalendar({ postcode })` — fetch the grow calendar for a 5-digit Swedish postcode
 
 **Key models:**
 - `CalendarResponse` — `{ postcode, zone, crops }` — top-level calendar response
