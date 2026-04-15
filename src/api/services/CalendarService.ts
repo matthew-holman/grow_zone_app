@@ -8,9 +8,9 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class CalendarService {
   /**
-   * Get crop calendar for a Swedish postcode
-   * Resolves the growing zone for a 5-digit Swedish postcode and returns a month-by-month sow/plant/harvest calendar for each supported crop.
-   * @returns CalendarResponse Crop calendar for the given postcode
+   * Get growing calendar for a Swedish postcode
+   * Resolves the nearest SMHI weather stations for the postcode, derives a climate profile via inverse distance weighting, and returns a structured growing calendar for all crops in the database.
+   * @returns CalendarResponse Growing calendar for the given postcode
    * @throws ApiError
    */
   public static getCalendar({
@@ -26,8 +26,8 @@ export class CalendarService {
       },
       errors: {
         400: `Invalid or missing postcode`,
-        404: `Postcode not found in the Swedish postcode database`,
-        500: `Internal server error`,
+        404: `Postcode not found in the database`,
+        503: `Not enough weather station data for this location`,
       },
     });
   }

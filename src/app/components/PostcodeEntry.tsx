@@ -1,8 +1,5 @@
 'use client'
 import React, { useState } from 'react'
-import { getZoneHint } from '@/lib/zones'
-import type { ZoneId } from '@/lib/zones'
-import { ZoneBadge } from './ZoneBadge'
 
 interface Props {
   onSubmit: (postcode: string) => void
@@ -12,21 +9,12 @@ interface Props {
 export function PostcodeEntry({ onSubmit, inlineError }: Props) {
   const [digits, setDigits] = useState('')
   const [display, setDisplay] = useState('')
-  const [zoneHint, setZoneHint] = useState<ZoneId | null>(null)
-  const [hintVisible, setHintVisible] = useState(false)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, '').slice(0, 5)
     setDigits(raw)
     const formatted = raw.length > 3 ? raw.slice(0, 3) + ' ' + raw.slice(3) : raw
     setDisplay(formatted)
-    if (raw.length === 5) {
-      setHintVisible(true)
-      setZoneHint(getZoneHint(raw))
-    } else {
-      setHintVisible(false)
-      setZoneHint(null)
-    }
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -62,7 +50,7 @@ export function PostcodeEntry({ onSubmit, inlineError }: Props) {
 
       {/* Subheading */}
       <p className="text-sm text-zinc-500 mb-12 leading-relaxed">
-        Enter your postcode for a personalised growing calendar calibrated to your zone in Sweden.
+        Enter your postcode for a personalised growing calendar calibrated to your local micro climate in Sweden.
       </p>
 
       <form onSubmit={handleSubmit}>
@@ -81,15 +69,8 @@ export function PostcodeEntry({ onSubmit, inlineError }: Props) {
           />
         </div>
 
-        {/* Zone hint */}
+        {/* Inline error */}
         <div className="h-8 mb-8 flex items-center">
-          {hintVisible && (
-            zoneHint !== null ? (
-              <ZoneBadge zone={zoneHint} />
-            ) : (
-              <span className="text-sm text-red-400">Postcode not recognised</span>
-            )
-          )}
           {inlineError && (
             <p role="alert" className="text-sm text-red-500">
               {inlineError}

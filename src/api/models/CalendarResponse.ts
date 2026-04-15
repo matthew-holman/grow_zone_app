@@ -2,13 +2,26 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CropCalendarEntry } from './CropCalendarEntry';
+import type { CropCalendar } from './CropCalendar';
 export type CalendarResponse = {
   postcode: string;
-  /**
-   * Swedish growing zone (1–5, where 1 is southernmost)
-   */
-  zone: (1 | 2 | 3 | 4 | 5);
-  crops: Array<CropCalendarEntry>;
+  location: {
+    lat: number;
+    lng: number;
+    elevationM: number;
+  };
+  climate: {
+    lastFrostDoy: number;
+    lastFrostP90: number;
+    firstFrostDoy: number;
+    firstFrostP10: number;
+    growingDays: number;
+    gddAnnual: number;
+    gddP10: number;
+    gddP90: number;
+    gddCv: number;
+    monthlyMeanTemps: Array<number>;
+  };
+  crops: Array<CropCalendar>;
 };
 

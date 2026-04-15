@@ -1,8 +1,5 @@
 'use client'
 import type { CalendarResponse } from '@/api'
-import { ZONE_REGIONS } from '@/lib/zones'
-import type { ZoneId } from '@/lib/zones'
-import { ZoneBadge } from './ZoneBadge'
 import { CalendarGrid } from './CalendarGrid'
 import { Legend } from './Legend'
 
@@ -12,8 +9,6 @@ interface Props {
 }
 
 export function CalendarResults({ data, onReset }: Props) {
-  const region = ZONE_REGIONS[data.zone as ZoneId]
-
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Back link */}
@@ -24,9 +19,11 @@ export function CalendarResults({ data, onReset }: Props) {
         &larr; Change postcode
       </button>
 
-      {/* Zone badge */}
+      {/* Climate pill */}
       <div className="mb-4">
-        <ZoneBadge zone={data.zone as ZoneId} />
+        <span className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-[var(--gc-green-tint)] text-[var(--gc-green-mid)]">
+          {data.climate.growingDays} growing days
+        </span>
       </div>
 
       {/* Page heading */}
@@ -38,9 +35,7 @@ export function CalendarResults({ data, onReset }: Props) {
       </h1>
 
       {/* Page subheading */}
-      <p className="text-sm text-zinc-500 mb-8">
-        {region} &middot; {data.crops.length} crops
-      </p>
+      <p className="text-sm text-zinc-500 mb-8">{data.crops.length} crops</p>
 
       {/* Calendar grid */}
       <CalendarGrid crops={data.crops} />

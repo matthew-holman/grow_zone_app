@@ -1,6 +1,7 @@
 'use client'
-import type { CropCalendarEntry } from '@/api'
-import { buildTracks } from '@/lib/calendar'
+import type { CropCalendar } from '@/api'
+import { MethodCalendar } from '@/api'
+import { buildTracksForMethod } from '@/lib/calendar'
 import type { TrackType } from '@/types'
 
 const MONTH_LABELS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
@@ -13,7 +14,7 @@ const TRACK_COLOURS: Record<TrackType, string> = {
 }
 
 interface Props {
-  crops: CropCalendarEntry[]
+  crops: CropCalendar[]
 }
 
 export function CalendarGrid({ crops }: Props) {
@@ -38,48 +39,74 @@ export function CalendarGrid({ crops }: Props) {
 
         {/* Crop rows */}
         {crops.map((crop, cropIndex) => {
-          const tracks = buildTracks(crop)
+          const visibleMethods = crop.methods.filter(
+            (m) => m.feasibility !== MethodCalendar.feasibility.INFEASIBLE
+          )
           return (
-            <div key={crop.id}>
+            <div key={crop.cropId}>
               {/* Crop name row */}
               <div
                 className={`grid py-2 ${cropIndex > 0 ? 'border-t border-zinc-100' : ''}`}
                 style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}
               >
                 <div className="sticky left-0 bg-white text-sm font-medium text-zinc-800 pr-2">
-                  {crop.name}
+                  {crop.cropNameEn}
                 </div>
                 {MONTHS.map((m) => (
                   <div key={m} />
                 ))}
               </div>
 
-              {/* Track rows */}
-              {tracks.map((track) => (
-                <div
-                  key={track.label}
-                  className="grid mb-1"
-                  style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}
-                >
-                  <div className="sticky left-0 bg-white text-[11px] text-zinc-400 pr-2 flex items-center">
-                    {track.label}
-                  </div>
-                  {MONTHS.map((month) => {
-                    const active = track.activeMonths.includes(month)
-                    return (
+              {/* Method groups */}
+              {visibleMethods.map((method) => {
+                const tracks = buildTracksForMethod(method)
+                if (tracks.length === 0) return null
+                return (
+                  <div key={method.methodId}>
+                    {/* Method sub-label — only shown when crop has >1 visible method */}
+                    {visibleMethods.length > 1 && (
                       <div
-                        key={month}
-                        style={{
-                          height: 14,
-                          backgroundColor: active ? TRACK_COLOURS[track.type] : 'transparent',
-                          borderRadius: active ? 2 : 0,
-                          margin: '0 1px',
-                        }}
-                      />
-                    )
-                  })}
-                </div>
-              ))}
+                        className="grid mb-0.5"
+                        style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}
+                      >
+                        <div className="sticky left-0 bg-white text-[10px] text-zinc-400 italic pr-2 flex items-center">
+                          {method.methodLabelEn}
+                        </div>
+                        {MONTHS.map((m) => (
+                          <div key={m} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Track rows */}
+                    {tracks.map((track) => (
+                      <div
+                        key={track.label}
+                        className="grid mb-1"
+                        style={{ gridTemplateColumns: '80px repeat(12, 1fr)' }}
+                      >
+                        <div className="sticky left-0 bg-white text-[11px] text-zinc-400 pr-2 flex items-center">
+                          {track.label}
+                        </div>
+                        {MONTHS.map((month) => {
+                          const active = track.activeMonths.includes(month)
+                          return (
+                            <div
+                              key={month}
+                              style={{
+                                height: 14,
+                                backgroundColor: active ? TRACK_COLOURS[track.type] : 'transparent',
+                                borderRadius: active ? 2 : 0,
+                                margin: '0 1px',
+                              }}
+                            />
+                          )
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                )
+              })}
 
               {/* Spacer after tracks */}
               <div className="h-2" />

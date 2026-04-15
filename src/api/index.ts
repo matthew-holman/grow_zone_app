@@ -8,7 +8,9 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { CalendarResponse } from './models/CalendarResponse';
-export type { CropCalendarEntry } from './models/CropCalendarEntry';
+export type { CalendarWindow } from './models/CalendarWindow';
+export type { CropCalendar } from './models/CropCalendar';
 export type { Error } from './models/Error';
+export { MethodCalendar } from './models/MethodCalendar';
 
 export { CalendarService } from './services/CalendarService';
