@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated file with invalid method names (code-gen bug) — bypassed by src/lib/adminApi.ts
+    "src/api/services/AdminCropsService.ts",
   ]),
 ]);
 

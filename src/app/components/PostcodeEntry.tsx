@@ -12,12 +12,14 @@ export function PostcodeEntry({ onSubmit, inlineError }: Props) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, '').slice(0, 5)
+      console.log(raw)
     setDigits(raw)
+      console.log(digits)
     const formatted = raw.length > 3 ? raw.slice(0, 3) + ' ' + raw.slice(3) : raw
     setDisplay(formatted)
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
     if (digits.length === 5) {
       onSubmit(digits)
